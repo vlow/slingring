@@ -5,7 +5,7 @@ v0.8, 2017-03-17
 :imagesdir: assets/images
 :toc:
 :toclevels: 4
-
+:toc-placement: preamble
 
 Slingring is a tool to automate the creation and usage of software development containers.
 Its main objective is to provide stable and reproducible environments for developers with a minimum amount of effort.
