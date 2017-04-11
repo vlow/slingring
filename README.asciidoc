@@ -11,19 +11,19 @@ Slingring is a tool to automate the creation and usage of software development c
 Its main objective is to provide stable and reproducible environments for developers with a minimum amount of effort.
 It relies on existing tools like debootstrap, schroot and Ansible to offer a rock solid foundation while minimizing the learning curve.
 
-== The short version
+== The Short Version
 Develop your software inside a flexible linux container.
 Use `seed create foo` to bootstrap an instruction set for a project called "foo" in an accordingly named folder.
 Use `universe create foo/` to bootstrap a container from an instruction set in the folder "foo".
 Use `slingring foo` to enter your container.
 
-== The long version
+== The Long Version
 === Disclaimer
 Like Slingring itself, this documentation is still under heavy development.
 If you don't find some information you need, it is most likely a bug.
 You can help the development of slingring by opening a new ticket on GitHub.
 
-=== What are development containers?
+=== What Are Development Containers?
 Development containers are isolated environments for software development projects.
 Some development eco systems provide something similar, e.g. https://github.com/pypa/virtualenv[virtualenv] for Python or http://rvm.io[RVM] for Ruby.
 But instead of those virtual environments, development containers are more like https://www.docker.com[Docker] containers.
