@@ -56,36 +56,29 @@ And if we actually run two development containers at the same time, it is likely
 
 Development containers are designed to suit these requirements.
 
-=== Terms
-Slingring defines three simple terms to illustrate its components:
-
-* Universe - the development container (like a docker container)
-* Seed - the instructions needed to create a development container (like a dockerfile)
-* Portal - a terminal connection inside the container (like an ssh connection into the container).
-
 === Installation
 You can install slingring using the provided packages or build your own packages using https://github.com/jordansissel/fpm[fpm].
 
 ==== Fedora
-https://www.turbocache3000.de/slingring/slingring-0.8.2-1.noarch.rpm[Slingring 0.8.2 RPM] (tested on Fedora 25)
+https://www.turbocache3000.de/slingring/slingring-0.8.2-1.noarch.rpm[slingring 0.8.2 RPM] (tested on Fedora 25)
 
 https://www.turbocache3000.de/slingring/schroot-process-check-1.1-1.x86_64.rpm[schroot-process-check 1.1 RPM (64 bit)] (tested on Fedora 25)
 
-Install by `$ sudo dnf install slingring-0.8.2-1.noarch.rpm schroot-process-check-1.1-1.x86_64.rpm`
+Install using `$ sudo dnf install slingring-0.8.2-1.noarch.rpm schroot-process-check-1.1-1.x86_64.rpm`
 
 ==== Ubuntu
-https://www.turbocache3000.de/slingring/slingring_0.8.2_all.deb[Slingring 0.8.2 Deb] (tested on Ubuntu 16.04 Xenial)
+https://www.turbocache3000.de/slingring/slingring_0.8.2_all.deb[slingring 0.8.2 Deb] (tested on Ubuntu 16.04 Xenial)
 
 https://www.turbocache3000.de/slingring/schroot-process-check_1.1_amd64.deb[schroot-process-check 1.1 Deb (64 bit)] (tested on Ubuntu 16.04 Xenial)
 
-Install by `$ sudo apt install slingring_0.8.2_all.deb schroot-process-check_1.1_amd64.deb`
+Install using `$ sudo apt install slingring_0.8.2_all.deb schroot-process-check_1.1_amd64.deb`
 
 ==== Arch Linux
-https://www.turbocache3000.de/slingring/slingring-0.8.2-1-any.pkg.tar.xz[Slingring 0.8.2 Pacman Package] (tested on Arch Linux)
+https://www.turbocache3000.de/slingring/slingring-0.8.2-1-any.pkg.tar.xz[slingring 0.8.2 Pacman Package] (tested on Arch Linux)
 
 https://www.turbocache3000.de/slingring/schroot-process-check-1.1-1-x86_64.pkg.tar.xz[schroot-process-check 1.1 Pacman Package (64 bit)] (tested on Arch Linux)
 
-Install by `$ sudo pacman -U slingring-0.8.2-1-any.pkg.tar.xz schroot-process-check-1.1-1-x86_64.pkg.tar.xz`
+Install using `$ sudo pacman -U slingring-0.8.2-1-any.pkg.tar.xz schroot-process-check-1.1-1-x86_64.pkg.tar.xz`
 
 ==== Create Packages Using FPM
 You must have fpm installed on your system.
@@ -97,7 +90,7 @@ It is then sufficient to run `./package.sh` in the repositories root directory.
 You might have to do the same for schroot-process-check, which will also need the golang compiler installed on the build system.
 This might also be your best bet if you want a 32-bit binary.
 
-=== Dependencies
+==== Dependencies
 The following packages have to be present on the target system:
 
 * Python >= 3.5
@@ -111,6 +104,13 @@ The following packages have to be present on the target system:
 
 Also, you need to have https://www.github.com/vlow/schroot-process-check[schroot-process-check] installed.
 Since this is not present in any of the official repositories, you can use the packages provided above, or create your own package using fpm.
+
+=== Terms
+Slingring defines three simple terms to illustrate its components:
+
+* Universe - the development container (like a docker container)
+* Seed - the instructions needed to create a development container (like a dockerfile)
+* Portal - a terminal connection inside the container (like an ssh connection into the container).
 
 === Usage
 ==== Seed
