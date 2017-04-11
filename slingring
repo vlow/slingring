@@ -1,0 +1,115 @@
+#!/bin/bash
+
+SEU_NAME=$1
+if [ "$SEU_NAME" = "" ]; then
+	echo "Usage: slingring UNIVERSE [COMMAND]"
+	exit 1
+fi
+
+SCHROOT_NAME=${SEU_NAME}
+SESSION_NAME=$SEU_NAME-seu-session
+COMMAND_ARGUMENT=$2
+if [ "$COMMAND_ARGUMENT" = "" ]; then
+	COMMAND_ARGUMENT="/bin/bash -l"
+fi
+
+check_session_exists()
+{
+	SESSION_ID=session:$1
+	SESSION_MATCH=$(schroot --all-sessions -l|grep ^$SESSION_ID$)
+
+	if [ "$SESSION_MATCH" = "$SESSION_ID" ] ; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+check_processes_stopped()
+{
+	schroot-process-check -q "$1"
+
+	RESULT=$?
+	if [ "$RESULT" = "0" ] ; then
+		return 0
+	elif [ "$RESULT" = "3" ] ; then
+		return 1
+	else
+		echo "The schroot session could not be checked for running processes."
+		echo "This could leave your universe in an inconsitent state."
+		echo 
+		echo "Please run schroot-process-check "$1" manually to find out more about the error."
+		exit 1
+	fi
+}
+
+check_session_running()
+{
+	RUNNING_SCHROOT_MOUNT=$(ps aux|grep "\ schroot -r -c $1\ ")
+
+	if [ "$RUNNING_SCHROOT_MOUNT" = "" ] ; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+check_session_valid()
+{
+	ROOT_MOUNT_MATCH=$(mount|grep "$1"\ )
+	PROC_MOUNT_MATCH=$(mount|grep "$1"\/proc)
+	SYS_MOUNT_MATCH=$(mount|grep "$1"\/sys)
+	DEV_MOUNT_MATCH=$(mount|grep "$1"\/dev)
+	DEVPTS_MOUNT_MATCH=$(mount|grep "$1"\/dev\/pts)
+
+	if [ "$ROOT_MOUNT_MATCH" = "" ] ||
+		[ "$PROC_MOUNT_MATCH" = "" ] ||
+		[ "$SYS_MOUNT_MATCH" = "" ] || 
+		[ "$DEV_MOUNT_MATCH" = "" ] || 
+		[ "$DEVPTS_MOUNT_MATCH" = "" ] ; then
+			return 1
+	else
+			return 0
+	fi
+}
+
+if ! check_session_exists "$SESSION_NAME"; then
+	echo Session does not exist. Creating...
+	schroot -b -c "$SCHROOT_NAME" -n "$SESSION_NAME" > /dev/null
+fi
+while ! check_session_valid "$SESSION_NAME"; do
+	CAN_RECOVER=true
+	if ! check_processes_stopped "$SESSION_NAME"; then
+		CAN_RECOVER=false
+		echo The universe seems to be in an invalid state, but there are still processes running inside it. Please make sure that all services are stopped and all portals are closed.
+		echo
+		echo Press any key to continue or CTRL+C to abort.
+	fi
+	if [ "$CAN_RECOVER" = true ]; then
+		schroot --recover-session -c "$SESSION_NAME"
+	fi
+done
+
+EXPORT_STRING=""
+if ! [ -z $DISPLAY ] ; then
+	EXPORT_STRING="$EXPORT_STRING export DISPLAY=\"$DISPLAY\";"
+fi
+
+if ! [ -z $SSH_AUTH_SOCK ] ; then
+	EXPORT_STRING="$EXPORT_STRING export SSH_AUTH_SOCK=\"$SSH_AUTH_SOCK\";"
+fi
+
+if ! [ -z $DBUS_SESSION_BUS_ADDRESS ] ; then
+	EXPORT_STRING="$EXPORT_STRING export DBUS_SESSION_BUS_ADDRESS=\"$DBUS_SESSION_BUS_ADDRESS\";"
+fi
+
+schroot -r -c "$SESSION_NAME" --directory="$HOME" -- /bin/bash -c "$EXPORT_STRING $COMMAND_ARGUMENT"
+
+if check_session_running "$SESSION_NAME"; then
+	exit 0
+fi
+if ! check_processes_stopped "$SESSION_NAME"; then
+	echo INFO: You closed your last portal to this universe but there are still processes running inside it. Please make sure to stop them before shutting down your computer to avoid umount locks.
+	exit 0
+fi
+schroot -e -c "$SESSION_NAME"

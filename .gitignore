@@ -1,0 +1,5 @@
+*.swp
+*.iml
+.idea/
+*.html
+__pycache__/

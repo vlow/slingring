@@ -1,0 +1,67 @@
+# The name of the universe. Keep in mind that users will usually
+# enter 'slingring name' or 'slingring "name with spaces" to enter
+# the universe, so names like VeryLongExampleOfAUniverseName might
+# not be very welcome, and underscores or hyphens are usually
+# preferable to spaces.
+name: << bootstrap.universe_name >>
+
+# The version of this universe description. You can use a completely
+# arbitrary string here, since slingring only distinguishes between
+# 'same version' and 'other version'. Yet, users might take an interest
+# in the version scheme, so use whatever suits them most (e.g. semantic
+# versioning or date based versions).
+version: << bootstrap.universe_version >>
+
+# The chroot architecture. You can use whatever architecture the desired
+# distribution offers, but keep in mind that incompatible architectures
+# like ARM on an x86 host might end up unusable. It is usually best to stick
+# with amd64 or i386 for debian/ubuntu systems.
+arch: amd64
+
+# The suite codename to base the chroot on. The suite must be available
+# on the below stated mirror. Debian mirrors will use something like 'jessie'
+# (Debian 8) or 'wheezy' (Debian 7). For Ubuntu mirrors, it is advisable to
+# use the most current LTS version (at the moment of writing 'xenial').
+suite: xenial
+
+# The mirror URL to retrieve the base image from. Choose something that
+# will suite most of your users. For an Ubuntu based chroot and a lot
+# of German users, you might want to use something like
+# http://de.archive.ubuntu.com/ubuntu
+mirror: http://archive.ubuntu.com/ubuntu
+
+# The chroot variant. Debootstrap supports a number of chroot variants
+# (see debootstrap(8) man page). The one most common should be minbase.
+# This will install the bare essentials. Every universe should only contain
+# what it actually needs, since we want to minimize unnecessary duplication.
+# It is therefore preferable to use the absolute minimal base image and install
+# whatever you need in your ansible playbook.
+variant: minbase
+
+# Additionally, you can add a list of desired variables below.
+# Slingring will ask the user for these variables when the
+# universe is built by their description. You can refer to those
+# variables anywhere in your playbooks by their name. A variable named
+# ldap_username can be referenced by {{ user_vars.ldap_username }}
+# in your Ansible playbooks.
+#
+# Variables which have the 'secret' flag set to 'yes' will be asked
+# without echoing and piped encrypted into Ansible. They will never
+# be written unencrypted to the disk unless your Ansible playbook
+# does so. A user secret named ldap_password can be referenced by
+# {{ user_secrets.ldap_password }}. See the examples below.
+#
+# variables:
+#   - name: ldap_username
+#     description: The company LDAP username
+#
+#   - name: ldap_password
+#     description: The company LDAP password
+#     secret: yes
+#
+#   - name: github_username
+#     description: The GitHub username
+#
+#   - name: github_password
+#     description: The GitHub password
+#     secret: yes

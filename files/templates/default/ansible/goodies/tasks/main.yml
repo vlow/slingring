@@ -1,0 +1,41 @@
+- name: aliases file is present
+  copy:
+          src: "bash_aliases"
+          dest: "{{ slingring.user_home }}/.bash_aliases"
+          owner: "{{ slingring.user_name }}"
+          group: "{{ slingring.user_group }}"
+          mode: 0600
+
+- name: aliases are sourced
+  become: yes
+  become_user: "{{ slingring.user_name }}"
+  lineinfile:
+          dest: "{{ slingring.user_home }}/.profile"
+          regexp: ".bash_aliases"
+          create: yes
+          line: "source ~/.bash_aliases"
+
+- name: create config folder
+  file: 
+          path: "{{ slingring.user_home }}/.config"
+          state: directory
+          owner: "{{ slingring.user_name }}"
+          group: "{{ slingring.user_group }}"
+          mode: 0700
+
+- name: ascii-art is present
+  template:
+          src: "ascii-art.j2"
+          dest: "{{ slingring.user_home }}/.config/ascii-art.txt"
+          owner: "{{ slingring.user_name }}"
+          group: "{{ slingring.user_group }}"
+          mode: 0600
+
+- name: ascii-art is presented
+  become: yes
+  become_user: "{{ slingring.user_name }}"
+  lineinfile:
+          dest: "{{ slingring.user_home }}/.profile"
+          regexp: "ascii-art"
+          create: yes
+          line: "clear && cat ~/.config/ascii-art.txt"

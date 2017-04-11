@@ -1,0 +1,17 @@
+- name: essentials are present
+  apt:
+          name: "{{ item }}"
+          state: present
+  with_items:
+          - bzip2
+          - curl
+          - vim
+
+- name: TERM variable is overwritten
+  become: yes
+  become_user: "{{ slingring.user_name }}"
+  lineinfile:
+          dest: "{{ slingring.user_home }}/.profile"
+          regexp: "export TERM"
+          create: yes
+          line: "export TERM=\"xterm-256color\""

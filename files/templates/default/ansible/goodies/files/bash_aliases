@@ -1,0 +1,10 @@
+# This file contains handy bash aliases for your universe.
+# They will automatically be sourced when you open a new portal.
+# If you add new aliases to this file, be sure to run
+#
+#	 slingring --update universe_name
+#
+# afterwards. This will update the file within the universe.
+
+alias ls='ls --color=auto'
+alias ll='ls -l'

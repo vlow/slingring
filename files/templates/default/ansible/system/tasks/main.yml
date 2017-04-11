@@ -1,0 +1,46 @@
+- name: universe repository is present
+  apt_repository:
+          repo: 'deb {{ slingring.mirror }} xenial main universe'
+          state: present
+
+- name: mtab symlink exists
+  file: 
+          src: /proc/mounts
+          dest: /etc/mtab
+          state: link
+
+- name: debian groups are present
+  group:
+          name: staff
+          state: present
+
+- name: package cache is up-to-date
+  apt:
+          update_cache: yes
+
+- name: sudo is present
+  apt:
+          name: sudo
+          state: present
+
+- name: wheel group has sudo access
+  lineinfile:
+          dest: /etc/sudoers
+          state: present
+          regexp: '^%wheel'
+          line: '%wheel ALL=(ALL) ALL'
+
+- name: locales are present
+  locale_gen:
+          name: "{{ item }}"
+          state: present
+  with_items: "{{ locales.present }}"
+
+- name: default locale is set
+  become: yes
+  become_user: "{{ slingring.user_name }}"
+  lineinfile:
+          dest: "/home/{{ slingring.user_name }}/.profile"
+          regexp: "LC_ALL"
+          create: yes
+          line: "export LC_ALL=\"{{ locales.default }}\""

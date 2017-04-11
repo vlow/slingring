@@ -1,0 +1,13 @@
+# This is the main Ansible file.
+# You can define tasks directly in this file
+# or create roles and reference them below.
+#
+# It is usually a good idea to keep the order of
+# the roles as is and append your own roles.
+
+-
+ hosts: all
+ roles:
+         - system
+         - essentials
+         - goodies

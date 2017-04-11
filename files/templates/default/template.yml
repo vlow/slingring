@@ -1,0 +1,24 @@
+# This file contains information only relevant for bootstrapping.
+# It will not be part of the universe description created by the bootstrapper.
+
+# A list of files which will be processed while bootstrapping the universe description.
+# While processing, all {{ bootstrap.* }} variables will be inserted into the files
+# matching the specified filters. The usual glob wildcards are supported. Double
+# asterisks (**) can be used for recursive matching. Be careful when adding wildcards
+# like '*'. Processing included binary files may take a long time even though there
+# are no variables to substitute in them.
+
+# If no filters are provided or this file is missing, no files will be processed while bootstrapping.
+
+template_filter:
+  - '**/*.yml'
+  - '**/*.j2'
+  # - 'universe.yml'
+  # - 'ascii-art.j2'
+
+# A list of files, which will not be processed, even though they match one or more of
+# the above defined filters. Supports the same glob wildcards.
+
+# template_blacklist:
+#   - 'ansible/example.yml'
+#   - '**/templates/*.yml'
