@@ -21,7 +21,7 @@ Use `slingring foo` to enter your container.
 === Disclaimer
 Like Slingring itself, this documentation is still under heavy development.
 If you don't find some information you need, it is most likely a bug.
-You can help the development of slingring by opening a new ticket on GitHub.
+You can help the development of Slingring by opening a new ticket on GitHub.
 
 === What Are Development Containers?
 Development containers are isolated environments for software development projects.
@@ -57,7 +57,7 @@ And if we actually run two development containers at the same time, it is likely
 Development containers are designed to suit these requirements.
 
 === Installation
-You can install slingring using the provided packages or build your own packages using https://github.com/jordansissel/fpm[fpm].
+You can install Slingring using the provided packages or build your own packages using https://github.com/jordansissel/fpm[fpm].
 
 ==== Fedora
 https://www.turbocache3000.de/slingring/slingring-0.8.2-1.noarch.rpm[slingring 0.8.2 RPM] (tested on Fedora 25)
