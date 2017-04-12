@@ -279,9 +279,34 @@ This is what the universe command does while creating a new container:
 
 After the container is bootstrapped, the command you can use to enter your container is printed on the screen.
 
+Since the seed has been copied to the local multiverse, it is no longer needed.
+
 ==== Listing the Installed Universes
 You can get a list of all installed universes using `universe list`.
 The verbose flag (`-v') will also show the corresponding location of each universe.
+
+==== Updating a Universe
+If your seed specifies any packages in their 'latest' version, you might want to update your universe from time to time.
+A playbook which, for example, contains a role to install a proprietary IDE like IntelliJ IDEA might update this package, even if it is not part of any repositories available in your container.
+This will essentially re-run the local copy of the Ansible playbook on your universe.
+
+Doing so might also fix problems like accidentally removed packages or repositories.
+It is therefore advisable to update your universe from time to time.
+
+The default template therefore includes the timestamp of the last update in the welcome header when opening a portal.
+
+To update a universe, simply run `universe update universe-name`.
+Adding the `-v` flag to the universe command will print all wrapped commands' output to stdout.
+
+==== Upgrading a Universe
+If you create or receive a newer version of a seed you used to bootstrap a local universe, you can upgrade your universe to the new seed.
+This will remove the seed used to bootstrap your universe from the local multiverse in favor of the new version and then run the update routine.
+Keep in mind that this behaviour is destined to fail, if the new seed made fundamental changes outside of the playbook.
+If, for example, the underlying base image has been changed to a newer Ubuntu version, there is no guarantee that an upgrade will work.
+It is therefore recommended to upgrade a universe _only_ if the author of the seed lists your seed version explicitly as compatible.
+
+To upgrade a universe to a new seed version run `universe upgrade universe-name seed-location/`.
+Adding the `-v` flag to the universe command will print all wrapped commands' output to stdout.
 
 ==== Removing a Universe
 You can get rid of any universe by simply entering `universe remove universe-name`.
