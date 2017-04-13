@@ -28,7 +28,7 @@ You can help the development of Slingring by opening a new ticket on GitHub.
 Development containers are isolated environments for software development projects.
 Some development eco systems provide something similar, e.g. https://github.com/pypa/virtualenv[virtualenv] for Python or http://rvm.io[RVM] for Ruby.
 But instead of those virtual environments, development containers are more like https://www.docker.com[Docker] containers.
-They contain a small but complete Linux user land and share basic ressources (like the kernel) with the host system.
+They contain a small but complete Linux user land and share basic resources (like the kernel) with the host system.
 
 Developing software within containers comes with some decent benefits:
 
