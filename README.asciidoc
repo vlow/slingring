@@ -364,7 +364,7 @@ On your host system, run
 Keep in mind that manual mounts are not managed by slingring and must be manually unmounted.
 
 ===== Users and Passwords
-When a universe is created, its' user database is copied from the host system.
+When a universe is created, its user database is copied from the host system.
 From that point on, the user databases are strictly separated.
 That means that adding a user or changing a password outside/inside the universe will not affect the other side.
 
