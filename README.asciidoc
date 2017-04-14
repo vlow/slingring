@@ -50,8 +50,7 @@ Aside from that, application containers are a lot more isolated than development
 Application containers are designed for horizontal scalability.
 A single host may run a multitude of the same container's instances at the same time.
 Application containers must therefore not expose their ports unless specifically configured to do so.
-The same development container is running usually only once at a time.
-So there is rarely the need to prevent port collissions in development containers.
+The same development container is usually running only once at a time, so there is rarely the need to prevent port collissions in development containers.
 On the contrary, IDEs, editors, and alike should run on the host systems X-server.
 And if we actually run two development containers at the same time, it is likely that we want them to communicate.
 
@@ -86,9 +85,9 @@ You must have fpm installed on your system.
 Make sure you have the packages necessary for creating rpm/deb/pacman packages installed.
 That might include rpm build tools and bsdtar.
 
-It is then sufficient to run `./package.sh` in the repositories root directory.
+It is then sufficient to run `./package.sh` in the repository's root directory.
 
-You might have to do the same for schroot-process-check, which will also need the golang compiler installed on the build system.
+You might have to do the same for https://www.github.com/vlow/schroot-process-check[schroot-process-check], which will also need the golang compiler installed on the build system.
 This might also be your best bet if you want a 32-bit binary.
 
 ==== Dependencies
@@ -110,7 +109,7 @@ Since this is not present in any of the official repositories, you can use the p
 Slingring defines three simple terms to illustrate its components:
 
 * Universe - the development container (like a docker container)
-* Seed - the instructions needed to create a development container (like a dockerfile)
+* Seed - the instruction set needed to create a development container (like a dockerfile)
 * Portal - a terminal connection inside the container (like an ssh connection into the container).
 
 === Usage
@@ -127,7 +126,7 @@ To create a new seed run `seed create seed-name`.
 This will create a new folder called 'seed-name', containing an already bootstrapable seed.
 
 Let's take a look at the contents of this folder.
-The most important thing is a file called `universe.yml`.
+The most important part is a file called `universe.yml`.
 It contains the following information:
 
 * The universe name
@@ -138,7 +137,7 @@ It contains the following information:
 * Further small configuration details.
 
 If you open the file, you'll find a detailed description of every configuration parameter above it.
-It is pre-filled with sensible defaults, but you are free to adjust the values to your likings.
+It is pre-filled with sensible defaults, but you are free to adjust the values to your liking.
 
 ===== Initializers
 The sub-directory `initializer` contains shell scripts which are used to prepare the container for the Ansible playbook.
@@ -205,7 +204,7 @@ You can use the default template as a starting point for your own templates.
 
 The default place to put custom templates is `~/.slingring/templates/template-name`.
 
-There is a number of variables available in templates:
+There are a number of variables available in templates:
 
 [options="header"]
 |===
@@ -230,7 +229,7 @@ The template filter is a list of files which will be processed while bootstrappi
 The usual glob wildcards are supported.
 Double asterisks (\**) can be used for recursive matching.
 Be careful when adding wildcards like '*'.
-Processing included binary files may take a long time even though there are no variables to substitute in them.
+Processing included binary files may take a long time even though they contain no variables to substitute.
 
 Example:
 
@@ -238,7 +237,7 @@ Example:
    - '**/*.yml'
    - '**/*.j2'
 
-Using the blacklist, you can define files which will not be processed, even though they math one or more of the above defined filters.
+Using the blacklist, you can define files which will not be processed, even though they match one or more of the above defined filters.
 The same glob wildcards are supported.
 
 Example:
@@ -249,7 +248,7 @@ Example:
 
 If no template.yml file can be found, expression substitution will be disabled while creating a seed.
 
-There is still little to none support for checking the validity of templates, so double check your templates before publishing them.
+There is still little to no support for checking the validity of templates, so double check your templates before publishing them.
 
 You can use the `seed list` command to see a list of templates available on your system.
 
@@ -267,7 +266,7 @@ Universes are bootstrapped from seeds.
 To bootstrap a universe run `universe create /path/to/seed_folder`.
 
 The universe command mostly wraps other tools like debootstrap and ansible.
-If one of those tools fails, the universe command will print the wrapped commands stdout and stderr.
+If one of those tools fails, the universe command will print the wrapped command's stdout and stderr.
 
 If you want to see more details about what is happening, use the `-v` flag like `universe -v create /path/to/seed_folder`.
 This will print all the wrapped commands' output to stdout.
@@ -281,7 +280,7 @@ This is what the universe command does while creating a new container:
 5. Copy the initializers to the universe and run them one by one using schroot
 6. Mount the virtual filesystems into the chroot (e.g. /dev, /proc, /sys etc.)
 7. Run the Ansible playbook in the `ansible` sub-directory of the seed on the chroot
-8. Umount the virtual filesystems
+8. Unmount the virtual filesystems
 
 After the container is bootstrapped, the command you can use to enter your container is printed on the screen.
 
@@ -303,9 +302,9 @@ Adding the `-v` flag to the universe command will print all wrapped commands' ou
 ===== Upgrading a Universe
 If you create or receive a newer version of a seed you used to bootstrap a local universe, you can upgrade your universe to the new seed.
 This will remove the seed used to bootstrap your universe from the local multiverse in favor of the new version and then run the update routine.
-Keep in mind that this behaviour is destined to fail, if the new seed made fundamental changes outside of the playbook.
+Keep in mind that this behaviour is destined to fail if the new seed contains fundamental changes outside of the playbook.
 If, for example, the underlying base image has been changed to a newer Ubuntu version, there is no guarantee that an upgrade will work.
-It is therefore recommended to upgrade a universe _only_ if the author of the seed lists your seed version explicitly as compatible.
+It is therefore recommended to upgrade a universe _only_ if the author of the seed explicitly lists your seed version as compatible.
 
 To upgrade a universe to a new seed version run `universe upgrade universe-name seed-location/`.
 Adding the `-v` flag to the universe command will print all wrapped commands' output to stdout.
@@ -337,7 +336,7 @@ This session contains mounts of the virtual file systems (/dev, /proc, /sys etc)
 When the last portal is closed, slingring will try to end the session.
 
 If a daemon has been started inside the universe, slingring will not be able to end the session.
-A corresponding warning is shown, if that happens.
+In that case a corresponding warning is shown.
 You can use the schroot-process-check command to show the PIDs of the processes running inside the universe.
 The session name is `UNIVERSE-NAME-seu-session`.
 The command `schroot-process-check -v foo-seu-session` will show all PIDs of processes inside the "foo" universe.
@@ -346,7 +345,7 @@ It is possible to open a portal, start a daemon and close the portal.
 In order to correctly end the session, open the portal again, stop the daemon and close the portal.
 
 Not ending a session before shutting down the system will usually not really break something.
-On the other hand, there is no guarantee that the virtual filesystems might not postpone the shutdown or all processes will properly end.
+On the other hand, there is no guarantee that the virtual filesystems might not postpone the shutdown or all processes will end properly.
 It is therefore recommended to stop all daemons and close all open portals afterwards to end the session.
 
 ==== Further Actions
