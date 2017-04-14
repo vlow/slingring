@@ -9,7 +9,7 @@ v0.8, 2017-03-17
 
 Slingring is a tool to automate the creation and usage of software development containers.
 Its main objective is to provide stable and reproducible environments for developers with a minimum amount of effort.
-It relies on existing tools like debootstrap, schroot and Ansible to offer a rock solid foundation while minimizing the learning curve.
+It relies on existing tools like debootstrap, schroot, and Ansible to offer a rock solid foundation while minimizing the learning curve.
 
 == The Short Version
 Develop your software inside a flexible linux container.
