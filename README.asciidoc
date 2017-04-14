@@ -255,7 +255,12 @@ You can use the `seed list` command to see a list of templates available on your
 
 If you want to create a seed from a specific template, you can do it like `seed -t template-name seed-name`.
 
-==== Bootstrapping a Universe
+==== Universe
+===== Listing the Installed Universes
+You can get a list of all installed universes using `universe list`.
+The verbose flag (`-v') will also show the corresponding location of each universe.
+
+===== Bootstrapping a Universe
 A universe is a locally installed instance of a development container.
 Universes are bootstrapped from seeds.
 
@@ -272,20 +277,17 @@ This is what the universe command does while creating a new container:
 1. Copy the seed to the local multiverse (`~/.slingring/multiverse/universe-name`)
 2. Create a chroot in the library (default: `/var/lib/slingring/universe-name`)
 3. Create a schroot configuration for the chroot
-4. Copy the initializers to the universe and run them one by one using schroot
-5. Mount the virtual filesystems into the chroot (e.g. /dev, /proc, /sys etc.)
-6. Run the Ansible playbook in the `ansible` sub-directory of the seed on the chroot
-7. Umount the virtual filesystems
+4. Initialize nssdatabases like passwd/shadow etc. based on the host
+5. Copy the initializers to the universe and run them one by one using schroot
+6. Mount the virtual filesystems into the chroot (e.g. /dev, /proc, /sys etc.)
+7. Run the Ansible playbook in the `ansible` sub-directory of the seed on the chroot
+8. Umount the virtual filesystems
 
 After the container is bootstrapped, the command you can use to enter your container is printed on the screen.
 
 Since the seed has been copied to the local multiverse, it is no longer needed.
 
-==== Listing the Installed Universes
-You can get a list of all installed universes using `universe list`.
-The verbose flag (`-v') will also show the corresponding location of each universe.
-
-==== Updating a Universe
+===== Updating a Universe
 If your seed specifies any packages in their 'latest' version, you might want to update your universe from time to time.
 A playbook which, for example, contains a role to install a proprietary IDE like IntelliJ IDEA might update this package, even if it is not part of any repositories available in your container.
 This will essentially re-run the local copy of the Ansible playbook on your universe.
@@ -298,7 +300,7 @@ The default template therefore includes the timestamp of the last update in the 
 To update a universe, simply run `universe update universe-name`.
 Adding the `-v` flag to the universe command will print all wrapped commands' output to stdout.
 
-==== Upgrading a Universe
+===== Upgrading a Universe
 If you create or receive a newer version of a seed you used to bootstrap a local universe, you can upgrade your universe to the new seed.
 This will remove the seed used to bootstrap your universe from the local multiverse in favor of the new version and then run the update routine.
 Keep in mind that this behaviour is destined to fail, if the new seed made fundamental changes outside of the playbook.
@@ -308,7 +310,7 @@ It is therefore recommended to upgrade a universe _only_ if the author of the se
 To upgrade a universe to a new seed version run `universe upgrade universe-name seed-location/`.
 Adding the `-v` flag to the universe command will print all wrapped commands' output to stdout.
 
-==== Removing a Universe
+===== Removing a Universe
 You can get rid of any universe by simply entering `universe remove universe-name`.
 
 Removing a universe will delete
@@ -319,7 +321,8 @@ Removing a universe will delete
 
 This also works with incomplete universes which may be a result of a failed bootstrap attempt.
 
-==== Entering a Universe
+==== Portal
+===== Opening a Portal
 The slingring command is used to enter a universe: `slingring universe-name`.
 You can also run a command directly inside the universe by appending it to the slingring command (e.g. `slingring universe-name ls`).
 
@@ -345,3 +348,40 @@ In order to correctly end the session, open the portal again, stop the daemon an
 Not ending a session before shutting down the system will usually not really break something.
 On the other hand, there is no guarantee that the virtual filesystems might not postpone the shutdown or all processes will properly end.
 It is therefore recommended to stop all daemons and close all open portals afterwards to end the session.
+
+==== Further Actions
+===== File Transfer
+One of the main benefits of using chroots for development containers is that the universes reside directly within the host file system.
+This makes it incredibly easy to move/copy files in and out of the universe: just open the universe directory on your host system and copy the files in and out.
+
+Since the universes passwd/shadow nssdatabase are initialized based on your host system, all files in the user home of your universe have the same owner as the files in your host's user home.
+
+If you want to access the host system from the guest, you can use a bind mount.
+On your host system, run
+
+    mount -o bind /path/on/your/host/system /path/to/the/mount/point/inside/the/universe
+
+Keep in mind that manual mounts are not managed by slingring and must be manually unmounted.
+
+===== Users and Passwords
+When a universe is created, its' user database is copied from the host system.
+From that point on, the user databases are strictly separated.
+That means that adding a user or changing a password outside/inside the universe will not affect the other side.
+
+The reason for this behaviour is that you might want to install services like mysql or apache inside your container which will have their own service user.
+Those users should be present only inside your universe.
+
+As a consequence, you can now add arbitrary users in your playbooks without the risk of doing harm to the user's host system.
+
+On the other hand, password changes outside the universe will not affect the users inside the universe.
+So if you change your user's password, make sure you do the same inside your universes.
+
+There are plans to add a convenience function to the universe command to update the password of one or more users inside all containers to the host's password for these users.
+
+=== Contribution
+Contribution to Slingring is more than welcome:
+
+* Please report any bugs or incompatible software as a GitHub ticket.
+* You can also open a new ticket if you have wishes or feature suggestions.
+* If you want to contribute code, don't hesitate to create a pull request.
+Please do so from a dedicated branch.
