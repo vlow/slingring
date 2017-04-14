@@ -369,7 +369,7 @@ From that point on, the user databases are strictly separated.
 That means that adding a user or changing a password outside/inside the universe will not affect the other side.
 
 The reason for this behaviour is that you might want to install services like mysql or apache inside your container which will have their own service user.
-Those users should be present only inside your universe.
+Those users should not be present outside your universe.
 
 As a consequence, you can now add arbitrary users in your playbooks without the risk of doing harm to the user's host system.
 
