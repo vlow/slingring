@@ -38,8 +38,7 @@ def list_universes(verbose):
     """
     Lists all universes on the local machine.
     """
-    multiverse_directory_path = paths.local_multiverse_dir()
-    multiverse_directory = os.listdir(multiverse_directory_path)
+    multiverse_directory = _get_directories_in_multiverse()
     universe_list = []
     for universe in multiverse_directory:
         installation_file_path = paths.installation_file_path(universe)
@@ -57,3 +56,9 @@ def list_universes(verbose):
             print(universe)
     else:
         print(_('no-universes-found'))
+
+def _get_directories_in_multiverse():
+    multiverse_directory_path = paths.local_multiverse_dir()
+    if os.path.exists(multiverse_directory_path):
+        return os.listdir(multiverse_directory_path)
+    return []
