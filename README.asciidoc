@@ -9,7 +9,7 @@ v0.8, 2017-03-17
 
 Slingring is a tool to automate the creation and usage of software development containers.
 Its main objective is to provide stable and reproducible environments for developers with a minimum amount of effort.
-It relies on existing tools like debootstrap, schroot and Ansible to offer a rock solid foundation while minimizing the learning curve.
+It relies on existing tools like debootstrap, schroot, and Ansible to offer a rock solid foundation while minimizing the learning curve.
 
 == The Short Version
 Develop your software inside a flexible linux container.
@@ -28,7 +28,7 @@ You can help the development of Slingring by opening a new ticket on GitHub.
 Development containers are isolated environments for software development projects.
 Some development eco systems provide something similar, e.g. https://github.com/pypa/virtualenv[virtualenv] for Python or http://rvm.io[RVM] for Ruby.
 But instead of those virtual environments, development containers are more like https://www.docker.com[Docker] containers.
-They contain a small but complete Linux user land and share basic ressources (like the kernel) with the host system.
+They contain a small but complete Linux user land and share basic resources (like the kernel) with the host system.
 
 Developing software within containers comes with some decent benefits:
 
@@ -50,8 +50,7 @@ Aside from that, application containers are a lot more isolated than development
 Application containers are designed for horizontal scalability.
 A single host may run a multitude of the same container's instances at the same time.
 Application containers must therefore not expose their ports unless specifically configured to do so.
-The same development container is running usually only once at a time.
-So there is rarely the need to prevent port collissions in development containers.
+The same development container is usually running only once at a time, so there is rarely the need to prevent port collissions in development containers.
 On the contrary, IDEs, editors, and alike should run on the host systems X-server.
 And if we actually run two development containers at the same time, it is likely that we want them to communicate.
 
@@ -86,9 +85,9 @@ You must have fpm installed on your system.
 Make sure you have the packages necessary for creating rpm/deb/pacman packages installed.
 That might include rpm build tools and bsdtar.
 
-It is then sufficient to run `./package.sh` in the repositories root directory.
+It is then sufficient to run `./package.sh` in the repository's root directory.
 
-You might have to do the same for schroot-process-check, which will also need the golang compiler installed on the build system.
+You might have to do the same for https://www.github.com/vlow/schroot-process-check[schroot-process-check], which will also need the golang compiler installed on the build system.
 This might also be your best bet if you want a 32-bit binary.
 
 ==== Dependencies
@@ -110,7 +109,7 @@ Since this is not present in any of the official repositories, you can use the p
 Slingring defines three simple terms to illustrate its components:
 
 * Universe - the development container (like a docker container)
-* Seed - the instructions needed to create a development container (like a dockerfile)
+* Seed - the instruction set needed to create a development container (like a dockerfile)
 * Portal - a terminal connection inside the container (like an ssh connection into the container).
 
 === Usage
@@ -127,7 +126,7 @@ To create a new seed run `seed create seed-name`.
 This will create a new folder called 'seed-name', containing an already bootstrapable seed.
 
 Let's take a look at the contents of this folder.
-The most important thing is a file called `universe.yml`.
+The most important part is a file called `universe.yml`.
 It contains the following information:
 
 * The universe name
@@ -138,7 +137,7 @@ It contains the following information:
 * Further small configuration details.
 
 If you open the file, you'll find a detailed description of every configuration parameter above it.
-It is pre-filled with sensible defaults, but you are free to adjust the values to your likings.
+It is pre-filled with sensible defaults, but you are free to adjust the values to your liking.
 
 ===== Initializers
 The sub-directory `initializer` contains shell scripts which are used to prepare the container for the Ansible playbook.
@@ -205,7 +204,7 @@ You can use the default template as a starting point for your own templates.
 
 The default place to put custom templates is `~/.slingring/templates/template-name`.
 
-There is a number of variables available in templates:
+There are a number of variables available in templates:
 
 [options="header"]
 |===
@@ -230,7 +229,7 @@ The template filter is a list of files which will be processed while bootstrappi
 The usual glob wildcards are supported.
 Double asterisks (\**) can be used for recursive matching.
 Be careful when adding wildcards like '*'.
-Processing included binary files may take a long time even though there are no variables to substitute in them.
+Processing included binary files may take a long time even though they contain no variables to substitute.
 
 Example:
 
@@ -238,7 +237,7 @@ Example:
    - '**/*.yml'
    - '**/*.j2'
 
-Using the blacklist, you can define files which will not be processed, even though they math one or more of the above defined filters.
+Using the blacklist, you can define files which will not be processed, even though they match one or more of the above defined filters.
 The same glob wildcards are supported.
 
 Example:
@@ -249,20 +248,25 @@ Example:
 
 If no template.yml file can be found, expression substitution will be disabled while creating a seed.
 
-There is still little to none support for checking the validity of templates, so double check your templates before publishing them.
+There is still little to no support for checking the validity of templates, so double check your templates before publishing them.
 
 You can use the `seed list` command to see a list of templates available on your system.
 
 If you want to create a seed from a specific template, you can do it like `seed -t template-name seed-name`.
 
-==== Bootstrapping a Universe
+==== Universe
+===== Listing the Installed Universes
+You can get a list of all installed universes using `universe list`.
+The verbose flag (`-v') will also show the corresponding location of each universe.
+
+===== Bootstrapping a Universe
 A universe is a locally installed instance of a development container.
 Universes are bootstrapped from seeds.
 
 To bootstrap a universe run `universe create /path/to/seed_folder`.
 
 The universe command mostly wraps other tools like debootstrap and ansible.
-If one of those tools fails, the universe command will print the wrapped commands stdout and stderr.
+If one of those tools fails, the universe command will print the wrapped command's stdout and stderr.
 
 If you want to see more details about what is happening, use the `-v` flag like `universe -v create /path/to/seed_folder`.
 This will print all the wrapped commands' output to stdout.
@@ -272,18 +276,40 @@ This is what the universe command does while creating a new container:
 1. Copy the seed to the local multiverse (`~/.slingring/multiverse/universe-name`)
 2. Create a chroot in the library (default: `/var/lib/slingring/universe-name`)
 3. Create a schroot configuration for the chroot
-4. Copy the initializers to the universe and run them one by one using schroot
-5. Mount the virtual filesystems into the chroot (e.g. /dev, /proc, /sys etc.)
-6. Run the Ansible playbook in the `ansible` sub-directory of the seed on the chroot
-7. Umount the virtual filesystems
+4. Initialize nssdatabases like passwd/shadow etc. based on the host
+5. Copy the initializers to the universe and run them one by one using schroot
+6. Mount the virtual filesystems into the chroot (e.g. /dev, /proc, /sys etc.)
+7. Run the Ansible playbook in the `ansible` sub-directory of the seed on the chroot
+8. Unmount the virtual filesystems
 
 After the container is bootstrapped, the command you can use to enter your container is printed on the screen.
 
-==== Listing the Installed Universes
-You can get a list of all installed universes using `universe list`.
-The verbose flag (`-v') will also show the corresponding location of each universe.
+Since the seed has been copied to the local multiverse, it is no longer needed.
 
-==== Removing a Universe
+===== Updating a Universe
+If your seed specifies any packages in their 'latest' version, you might want to update your universe from time to time.
+A playbook which, for example, contains a role to install a proprietary IDE like IntelliJ IDEA might update this package, even if it is not part of any repositories available in your container.
+This will essentially re-run the local copy of the Ansible playbook on your universe.
+
+Doing so might also fix problems like accidentally removed packages or repositories.
+It is therefore advisable to update your universe from time to time.
+
+The default template therefore includes the timestamp of the last update in the welcome header when opening a portal.
+
+To update a universe, simply run `universe update universe-name`.
+Adding the `-v` flag to the universe command will print all wrapped commands' output to stdout.
+
+===== Upgrading a Universe
+If you create or receive a newer version of a seed you used to bootstrap a local universe, you can upgrade your universe to the new seed.
+This will remove the seed used to bootstrap your universe from the local multiverse in favor of the new version and then run the update routine.
+Keep in mind that this behaviour is destined to fail if the new seed contains fundamental changes outside of the playbook.
+If, for example, the underlying base image has been changed to a newer Ubuntu version, there is no guarantee that an upgrade will work.
+It is therefore recommended to upgrade a universe _only_ if the author of the seed explicitly lists your seed version as compatible.
+
+To upgrade a universe to a new seed version run `universe upgrade universe-name seed-location/`.
+Adding the `-v` flag to the universe command will print all wrapped commands' output to stdout.
+
+===== Removing a Universe
 You can get rid of any universe by simply entering `universe remove universe-name`.
 
 Removing a universe will delete
@@ -294,7 +320,8 @@ Removing a universe will delete
 
 This also works with incomplete universes which may be a result of a failed bootstrap attempt.
 
-==== Entering a Universe
+==== Portal
+===== Opening a Portal
 The slingring command is used to enter a universe: `slingring universe-name`.
 You can also run a command directly inside the universe by appending it to the slingring command (e.g. `slingring universe-name ls`).
 
@@ -309,7 +336,7 @@ This session contains mounts of the virtual file systems (/dev, /proc, /sys etc)
 When the last portal is closed, slingring will try to end the session.
 
 If a daemon has been started inside the universe, slingring will not be able to end the session.
-A corresponding warning is shown, if that happens.
+In that case a corresponding warning is shown.
 You can use the schroot-process-check command to show the PIDs of the processes running inside the universe.
 The session name is `UNIVERSE-NAME-seu-session`.
 The command `schroot-process-check -v foo-seu-session` will show all PIDs of processes inside the "foo" universe.
@@ -318,5 +345,42 @@ It is possible to open a portal, start a daemon and close the portal.
 In order to correctly end the session, open the portal again, stop the daemon and close the portal.
 
 Not ending a session before shutting down the system will usually not really break something.
-On the other hand, there is no guarantee that the virtual filesystems might not postpone the shutdown or all processes will properly end.
+On the other hand, there is no guarantee that the virtual filesystems might not postpone the shutdown or all processes will end properly.
 It is therefore recommended to stop all daemons and close all open portals afterwards to end the session.
+
+==== Further Actions
+===== File Transfer
+One of the main benefits of using chroots for development containers is that the universes reside directly within the host file system.
+This makes it incredibly easy to move/copy files in and out of the universe: just open the universe directory on your host system and copy the files in and out.
+
+Since the universes passwd/shadow nssdatabase are initialized based on your host system, all files in the user home of your universe have the same owner as the files in your host's user home.
+
+If you want to access the host system from the guest, you can use a bind mount.
+On your host system, run
+
+    mount -o bind /path/on/your/host/system /path/to/the/mount/point/inside/the/universe
+
+Keep in mind that manual mounts are not managed by slingring and must be manually unmounted.
+
+===== Users and Passwords
+When a universe is created, its user database is copied from the host system.
+From that point on, the user databases are strictly separated.
+That means that adding a user or changing a password outside/inside the universe will not affect the other side.
+
+The reason for this behaviour is that you might want to install services like mysql or apache inside your container which will have their own service user.
+Those users should not be present outside your universe.
+
+As a consequence, you can now add arbitrary users in your playbooks without the risk of doing harm to the user's host system.
+
+On the other hand, password changes outside the universe will not affect the users inside the universe.
+So if you change your user's password, make sure you do the same inside your universes.
+
+There are plans to add a convenience function to the universe command to update the password of one or more users inside all containers to the host's password for these users.
+
+=== Contribution
+Contribution to Slingring is more than welcome:
+
+* Please report any bugs or incompatible software as a GitHub ticket.
+* You can also open a new ticket if you have wishes or feature suggestions.
+* If you want to contribute code, don't hesitate to create a pull request.
+Please do so from a dedicated branch.
