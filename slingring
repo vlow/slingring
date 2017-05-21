@@ -7,7 +7,7 @@ if [ "$SEU_NAME" = "" ]; then
 fi
 
 SCHROOT_NAME=${SEU_NAME}
-SESSION_NAME=$SEU_NAME-seu-session
+SESSION_NAME=${SEU_NAME}-seu-session
 COMMAND_ARGUMENT=$2
 if [ "$COMMAND_ARGUMENT" = "" ]; then
 	COMMAND_ARGUMENT="/bin/bash -l"
@@ -16,7 +16,7 @@ fi
 check_session_exists()
 {
 	SESSION_ID=session:$1
-	SESSION_MATCH=$(schroot --all-sessions -l|grep ^$SESSION_ID$)
+	SESSION_MATCH=$(schroot --all-sessions -l|grep ^${SESSION_ID}$)
 
 	if [ "$SESSION_MATCH" = "$SESSION_ID" ] ; then
 		return 0
@@ -104,15 +104,15 @@ while ! check_session_valid "$SESSION_NAME"; do
 done
 
 EXPORT_STRING=""
-if ! [ -z $DISPLAY ] ; then
+if ! [ -z ${DISPLAY} ] ; then
 	EXPORT_STRING="$EXPORT_STRING export DISPLAY=\"$DISPLAY\";"
 fi
 
-if ! [ -z $SSH_AUTH_SOCK ] ; then
+if ! [ -z ${SSH_AUTH_SOCK} ] ; then
 	EXPORT_STRING="$EXPORT_STRING export SSH_AUTH_SOCK=\"$SSH_AUTH_SOCK\";"
 fi
 
-if ! [ -z $DBUS_SESSION_BUS_ADDRESS ] ; then
+if ! [ -z ${DBUS_SESSION_BUS_ADDRESS} ] ; then
 	EXPORT_STRING="$EXPORT_STRING export DBUS_SESSION_BUS_ADDRESS=\"$DBUS_SESSION_BUS_ADDRESS\";"
 fi
 
