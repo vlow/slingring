@@ -96,7 +96,7 @@ while ! check_session_valid "$SESSION_NAME"; do
 		CAN_RECOVER=false
 		echo The universe seems to be in an invalid state, but there are still processes running inside it. Please make sure that all services are stopped and all portals are closed.
 		echo
-		echo Press any key to continue or CTRL+C to abort.
+		read -p "Press any key to retry or CTRL+C to abort."
 	fi
 	if [ "$CAN_RECOVER" = true ]; then
 		schroot --recover-session -c "$SESSION_NAME"
