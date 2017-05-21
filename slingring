@@ -80,7 +80,7 @@ if ! check_session_exists "$SESSION_NAME"; then
 
 	# get X11 authority into the chroot
 	COOKIE_NAME=$(xauth list ${DISPLAY}|sed s/[\ ]*MIT-MAGIC-COOKIE-[\ a-f0-9]*//)
-	if [ -z ${COOKIE_NAME} ]; then
+	if ! [ -z ${COOKIE_NAME} ]; then
         CHROOT_DIR=$(LANG="C" schroot -i -c ${SCHROOT_NAME}|grep Directory|sed s/[\ ]Directory[\ ]//)
         xauth extract ${CHROOT_DIR}${HOME}/.Xauthority ${COOKIE_NAME}
     fi
