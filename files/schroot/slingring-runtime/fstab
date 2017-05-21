@@ -7,6 +7,7 @@
 /sys            /sys            none    rw,bind         0       0
 /dev            /dev            none    rw,bind         0       0
 /dev/pts        /dev/pts        none    rw,bind         0       0
+/tmp/.X11-unix  /tmp/.X11-unix  none    rw,bind         0       0
 
 # It may be desirable to have access to /run, especially if you wish
 # to run additional services in the chroot.  However, note that this

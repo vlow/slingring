@@ -91,6 +91,9 @@ def create_universe(seed_path, temp_dir, verbose):
     print(_('prepare-chroot'))
     user_home = chroot.create_user_home(user_name, user_group, universe_name, verbose)
 
+    # The runtime-profile will mount the x11 unix socket into the schroot, so the mount point must exist.
+    chroot.create_x11_socket_dir(universe_name, verbose)
+
     # Phase 4.2: Since everything is set up now, we set schroot config to (runtime) after first command.
     #            This will prevent subsequent schroot calls from overwriting the 'copyfiles' (e.g. /etc/passwd).
     schroot.change_schroot_profile(universe_name, schroot_config_path, 'slingring-runtime',

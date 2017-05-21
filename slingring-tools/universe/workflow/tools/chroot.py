@@ -17,8 +17,9 @@
 
 ########################################################
 
-import os
 from tempfile import TemporaryDirectory
+
+import os
 
 import applications.ansible as ansible
 import applications.debootstrap as debootstrap
@@ -113,6 +114,16 @@ def create_user_home(user_name, user_group, schroot_name, verbose):
     schroot.execute_in_schroot(schroot_name, 'chown {}:{} {}'.format(user_name, user_group, user_home), True,
                                'prepare-chroot-phase', verbose)
     return user_home
+
+
+def create_x11_socket_dir(schroot_name, verbose):
+    """
+    Creates the x11 socket dir under /tmp/.X11-unix.
+    :param schroot_name: The name of the schroot
+    :param verbose: True, if a more verbose output is desired.
+    """
+    schroot.execute_in_schroot(schroot_name, 'mkdir -p /tmp/.X11-unix', True, 'prepare-chroot-phase', verbose)
+    schroot.execute_in_schroot(schroot_name, 'chmod 1777 /tmp/.X11-unix', True, 'prepare-chroot-phase', verbose)
 
 
 def mount(chroot_path, verbose):

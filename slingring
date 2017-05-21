@@ -61,12 +61,14 @@ check_session_valid()
 	SYS_MOUNT_MATCH=$(mount|grep "$1"\/sys)
 	DEV_MOUNT_MATCH=$(mount|grep "$1"\/dev)
 	DEVPTS_MOUNT_MATCH=$(mount|grep "$1"\/dev\/pts)
+	X11_MOUNT_MATCH=$(mount|grep "$1"\/tmp\/.X11-unix)
 
 	if [ "$ROOT_MOUNT_MATCH" = "" ] ||
 		[ "$PROC_MOUNT_MATCH" = "" ] ||
 		[ "$SYS_MOUNT_MATCH" = "" ] || 
 		[ "$DEV_MOUNT_MATCH" = "" ] || 
-		[ "$DEVPTS_MOUNT_MATCH" = "" ] ; then
+		[ "$DEVPTS_MOUNT_MATCH" = "" ] ||
+		[ "$X11_MOUNT_MATCH" = "" ] ; then
 			return 1
 	else
 			return 0
@@ -75,7 +77,18 @@ check_session_valid()
 
 if ! check_session_exists "$SESSION_NAME"; then
 	echo Session does not exist. Creating...
+
+	# get X11 authority into the chroot
+	COOKIE_NAME=$(xauth list ${DISPLAY}|sed s/[\ ]*MIT-MAGIC-COOKIE-[\ a-f0-9]*//)
+	if [ -z ${COOKIE_NAME} ]; then
+        CHROOT_DIR=$(LANG="C" schroot -i -c ${SCHROOT_NAME}|grep Directory|sed s/[\ ]Directory[\ ]//)
+        xauth extract ${CHROOT_DIR}${HOME}/.Xauthority ${COOKIE_NAME}
+    fi
+
+	# create session
 	schroot -b -c "$SCHROOT_NAME" -n "$SESSION_NAME" > /dev/null
+
+
 fi
 while ! check_session_valid "$SESSION_NAME"; do
 	CAN_RECOVER=true
