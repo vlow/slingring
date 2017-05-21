@@ -36,7 +36,7 @@ check_processes_stopped()
 		return 1
 	else
 		echo "The schroot session could not be checked for running processes."
-		echo "This could leave your universe in an inconsitent state."
+		echo "This could leave your universe in an inconsistent state."
 		echo 
 		echo "Please run schroot-process-check "$1" manually to find out more about the error."
 		exit 1
