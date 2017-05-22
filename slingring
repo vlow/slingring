@@ -87,19 +87,24 @@ if ! check_session_exists "$SESSION_NAME"; then
 
 	# create session
 	schroot -b -c "$SCHROOT_NAME" -n "$SESSION_NAME" > /dev/null
-
-
 fi
+
 while ! check_session_valid "$SESSION_NAME"; do
-	CAN_RECOVER=true
 	if ! check_processes_stopped "$SESSION_NAME"; then
-		CAN_RECOVER=false
-		echo The universe seems to be in an invalid state, but there are still processes running inside it. Please make sure that all services are stopped and all portals are closed.
+		echo "The universe seems to be in an invalid state, but there are still processes"\
+		"running inside it. Please make sure that all services are stopped and all"\
+		"portals are closed."
 		echo
 		read -p "Press any key to retry or CTRL+C to abort."
-	fi
-	if [ "$CAN_RECOVER" = true ]; then
+	else
 		schroot --recover-session -c "$SESSION_NAME"
+		if ! check_session_valid "$SESSION_NAME"; then
+		    echo "The universe seems to be in an invalid state. That usually means that there"\
+		    "is a schroot session but some expected mounts are missing. Unfortunately,"\
+		    "slingring could not automatically recover the session."
+            echo
+            read -p "Press any key to retry or CTRL+C to abort."
+	    fi
 	fi
 done
 
@@ -122,7 +127,10 @@ if check_session_running "$SESSION_NAME"; then
 	exit 0
 fi
 if ! check_processes_stopped "$SESSION_NAME"; then
-	echo INFO: You closed your last portal to this universe but there are still processes running inside it. Please make sure to stop them before shutting down your computer to avoid umount locks.
+    echo
+	echo "INFO: You closed the last portal to this universe but there are still processes"\
+	"running inside it."
+	echo "Please make sure to stop them before shutting down your computer to avoid umount locks."
 	exit 0
 fi
 schroot -e -c "$SESSION_NAME"
