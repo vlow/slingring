@@ -30,21 +30,21 @@ from universe.workflow.tools.paths import source_universe_file_path, copy_seed_t
     schroot_config_file_path, initializer_directory_path, designated_universe_path, colliding_paths_exist
 
 
-def create_universe_by_args(args):
+def install_universe_by_args(args):
     """"
-    Creates a new universe from a universe description.
+    Installs a new universe from a universe description.
     :param args: The command line arguments as parsed by argparse.
                  This is expected to contain the following information:
                     - seed: The path to the universe seed directory as string.
                     - temp: An alternative temp directory for debootstrapping (must not contain spaces).
                     - verbose: True, for more verbose output.
     """
-    create_universe(args.seed, args.temp, args.verbose)
+    install_universe(args.seed, args.temp, args.verbose)
 
 
-def create_universe(seed_path, temp_dir, verbose):
+def install_universe(seed_path, temp_dir, verbose):
     """"
-    Creates a new universe from a universe description.
+    Installs a new universe from a universe description.
     :param seed_path: The path to the universe seed directory as string.
     :param temp_dir: An alternative temp directory for debootstrapping (must not contain spaces).
     :param verbose: True, for more verbose output.

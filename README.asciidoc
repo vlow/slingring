@@ -15,7 +15,7 @@ It relies on existing tools like debootstrap, schroot, and Ansible to offer a ro
 Develop your software inside a flexible linux container.
 
 * Use `seed create foo` to bootstrap an instruction set for a project called "foo" in an accordingly named folder
-* Use `universe create foo/` to bootstrap a container from an instruction set in the folder "foo"
+* Use `universe install foo/` to install the container defined in the instruction set (seed) in the folder "foo"
 * Use `slingring foo` to enter your container
 
 == The Long Version

@@ -20,7 +20,7 @@
 ########################################################
 import argparse
 
-from universe.workflow.creation import create_universe_by_args
+from universe.workflow.creation import install_universe_by_args
 from universe.workflow.deletion import remove_universe_by_args
 from universe.workflow.listing import list_universes_by_args
 from universe.workflow.update import update_universe_by_args
@@ -42,14 +42,14 @@ def process_cli_arguments():
 
     subparsers = parser.add_subparsers(help='the desired operation', dest='operation', metavar='operation')
 
-    list_parser = subparsers.add_parser('list', help='list existing universes')
+    list_parser = subparsers.add_parser('list', help='list installed universes')
     list_parser.set_defaults(func=list_universes_by_args)
 
-    create_parser = subparsers.add_parser('create', help='creates a new universe from a seed')
-    create_parser.add_argument('seed', metavar='DIRECTORY', type=str,
-                               help='the seed directory to build the universe from')
-    create_parser.add_argument('-t', '--temp', type=str, help='the temp directory to use (defaults to system temp)')
-    create_parser.set_defaults(func=create_universe_by_args)
+    install_parser = subparsers.add_parser('install', help='installs a new universe from a seed')
+    install_parser.add_argument('seed', metavar='DIRECTORY', type=str,
+                                help='the seed directory to build the universe from')
+    install_parser.add_argument('-t', '--temp', type=str, help='the temp directory to use (defaults to system temp)')
+    install_parser.set_defaults(func=install_universe_by_args)
 
     remove_parser = subparsers.add_parser('remove', help='removes an existing universe')
     remove_parser.add_argument('universe', help='the universe which should be removed')
