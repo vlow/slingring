@@ -22,6 +22,7 @@ from tempfile import gettempdir
 import applications.schroot as schroot
 import system.user as user
 import universe.workflow.tools.chroot as chroot
+from os import path
 from common import configuration
 from resources.messages import get as _
 from universe.workflow.common import gather_variables_from_user, create_slingring_vars_dict, print_spaced, \
@@ -51,6 +52,8 @@ def install_universe(seed_path, temp_dir, verbose):
     """
     source_seed_directory = get_seed_directory_from_argument(seed_path)
     source_seed_universe_path = source_universe_file_path(source_seed_directory)
+    _validate_seed_path_exists(source_seed_universe_path, seed_path)
+
     seed_dictionary = configuration.read_seed_file(source_seed_universe_path)
     universe_name = seed_dictionary['name']
     temp_dir = _get_temp_dir_from_argument(temp_dir)
@@ -120,6 +123,12 @@ def install_universe(seed_path, temp_dir, verbose):
         quote = ''
 
     print_spaced(_('done').format(quote, universe_name, quote))
+
+
+def _validate_seed_path_exists(seed_file_path, seed_path):
+    if not path.exists(seed_file_path):
+        print(_('seed-not-exists').format(seed_path))
+        exit(1)
 
 
 def _validate_paths_for_collision(universe_name):

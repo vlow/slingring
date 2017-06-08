@@ -177,6 +177,9 @@ or remove the existing universe / schroot config.''',
 
 Do you want to proceed?''',
 
+    'seed-not-exists': '''Error: A seed named "{}" could not be found in the given location. Make sure your
+       argument is a valid path to a seed directory. Trailing slashes are optional.''',
+
     'different_arch_error': '''Error: The seed you are trying to upgrade your universe to uses another base
        architecture. It is not possible to change the architecture of a universe
        by upgrading.''',
