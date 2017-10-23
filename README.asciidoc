@@ -60,25 +60,25 @@ Development containers are designed to suit these requirements.
 You can install Slingring using the provided packages or build your own packages using https://github.com/jordansissel/fpm[fpm].
 
 ==== Fedora
-https://www.turbocache3000.de/slingring/slingring-0.8.2-1.noarch.rpm[slingring 0.8.2 RPM] (tested on Fedora 25)
+https://www.turbocache3000.de/slingring/slingring-0.8.3-1.noarch.rpm[slingring 0.8.3 RPM] (tested on Fedora 25)
 
 https://www.turbocache3000.de/slingring/schroot-process-check-1.1-1.x86_64.rpm[schroot-process-check 1.1 RPM (64 bit)] (tested on Fedora 25)
 
-Install using `$ sudo dnf install slingring-0.8.2-1.noarch.rpm schroot-process-check-1.1-1.x86_64.rpm`
+Install using `$ sudo dnf install slingring-0.8.3-1.noarch.rpm schroot-process-check-1.1-1.x86_64.rpm`
 
 ==== Ubuntu
-https://www.turbocache3000.de/slingring/slingring_0.8.2_all.deb[slingring 0.8.2 Deb] (tested on Ubuntu 16.04 Xenial)
+https://www.turbocache3000.de/slingring/slingring_0.8.3_all.deb[slingring 0.8.3 Deb] (tested on Ubuntu 16.04 Xenial)
 
 https://www.turbocache3000.de/slingring/schroot-process-check_1.1_amd64.deb[schroot-process-check 1.1 Deb (64 bit)] (tested on Ubuntu 16.04 Xenial)
 
-Install using `$ sudo apt install slingring_0.8.2_all.deb schroot-process-check_1.1_amd64.deb`
+Install using `$ sudo apt install slingring_0.8.3_all.deb schroot-process-check_1.1_amd64.deb`
 
 ==== Arch Linux
-https://www.turbocache3000.de/slingring/slingring-0.8.2-1-any.pkg.tar.xz[slingring 0.8.2 Pacman Package] (tested on Arch Linux)
+https://www.turbocache3000.de/slingring/slingring-0.8.3-1-any.pkg.tar.xz[slingring 0.8.3 Pacman Package] (tested on Arch Linux)
 
 https://www.turbocache3000.de/slingring/schroot-process-check-1.1-1-x86_64.pkg.tar.xz[schroot-process-check 1.1 Pacman Package (64 bit)] (tested on Arch Linux)
 
-Install using `$ sudo pacman -U slingring-0.8.2-1-any.pkg.tar.xz schroot-process-check-1.1-1-x86_64.pkg.tar.xz`
+Install using `$ sudo pacman -U slingring-0.8.3-1-any.pkg.tar.xz schroot-process-check-1.1-1-x86_64.pkg.tar.xz`
 
 ==== Create Packages Using FPM
 You must have fpm installed on your system.
