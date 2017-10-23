@@ -60,9 +60,9 @@ Development containers are designed to suit these requirements.
 You can install Slingring using the provided packages or build your own packages using https://github.com/jordansissel/fpm[fpm].
 
 ==== Fedora
-https://www.turbocache3000.de/slingring/slingring-0.8.3-1.noarch.rpm[slingring 0.8.3 RPM] (tested on Fedora 25)
+https://www.turbocache3000.de/slingring/slingring-0.8.3-1.noarch.rpm[slingring 0.8.3 RPM] (tested on Fedora 26)
 
-https://www.turbocache3000.de/slingring/schroot-process-check-1.1-1.x86_64.rpm[schroot-process-check 1.1 RPM (64 bit)] (tested on Fedora 25)
+https://www.turbocache3000.de/slingring/schroot-process-check-1.1-1.x86_64.rpm[schroot-process-check 1.1 RPM (64 bit)] (tested on Fedora 26)
 
 Install using `$ sudo dnf install slingring-0.8.3-1.noarch.rpm schroot-process-check-1.1-1.x86_64.rpm`
 
