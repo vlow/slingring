@@ -32,7 +32,7 @@ _msg = {
 
     'no-universes-found':
         '''There are not yet any universes on this system.
-Use 'universe create' to create your first universe.''',
+Use 'universe install' to create your first universe.''',
 
     'input-header':
         '''This universe seed requests additional information. If you
