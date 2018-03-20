@@ -79,7 +79,7 @@ if ! check_session_exists "$SESSION_NAME"; then
 	echo Session does not exist. Creating...
 
 	# get X11 authority into the chroot
-	COOKIE_NAME=$(xauth list ${DISPLAY}|sed s/[\ ]*MIT-MAGIC-COOKIE-[\ a-f0-9]*//)
+	COOKIE_NAME=$(xauth list ${DISPLAY}|head -1 |sed "s/[\:\ ]*MIT-MAGIC-COOKIE-[\ a-f0-9]*/${DISPLAY}/")
 	if ! [ -z "${COOKIE_NAME}" ]; then
         CHROOT_DIR=$(LANG="C" schroot -i -c ${SCHROOT_NAME}|grep Directory|sed s/[\ ]Directory[\ ]//)
         xauth extract ${CHROOT_DIR}${HOME}/.Xauthority ${COOKIE_NAME}
