@@ -24,8 +24,12 @@ from common.configuration import ConfigurationHandler
 from common.paths import local_home
 
 
+def local_configuration_dir():
+    return os.path.join(local_home(), '.slingring')
+
+
 def local_multiverse_dir():
-    return os.path.join(local_home(), '.slingring', 'multiverse')
+    return os.path.join(local_configuration_dir(), 'multiverse')
 
 
 def local_universe_dir(universe_name):
@@ -72,8 +76,16 @@ def user_home_in_chroot(user_name):
     return os.path.join("/home", user_name)
 
 
+def schroot_config_directory_path():
+    return '/etc/schroot/chroot.d'
+
+
+def schroot_config_file_name(universe_name):
+    return universe_name + '.conf'
+
+
 def schroot_config_file_path(universe_name):
-    return '/etc/schroot/chroot.d/' + universe_name + ".conf"
+    return os.path.join(schroot_config_directory_path(), schroot_config_file_name(universe_name))
 
 
 def initializer_directory_path(universe_name):

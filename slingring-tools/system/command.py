@@ -42,7 +42,7 @@ def _command_print(cmd_output, phase, command, verbose, pipe_command=None):
     return cmd_output
 
 
-def run_command(command, phase_key, verbose, env=None):
+def run_command(command, phase_key, verbose, env=None, shell=False):
     """
     Runs a command on the local machine. The stdout/stderr is hidden, unless an error
     occurs. In that case, an error message containing the stderr is shown and a
@@ -52,12 +52,13 @@ def run_command(command, phase_key, verbose, env=None):
     :param phase_key: a message key which describes the current phase. This is used if something fails.
     :param verbose: True, if a more verbose output is desired.
     :param env: A dictionary of environment variables for the given command.
+    :param shell: Run the command in a shell. Allows use of shell features.
     :return: The process output of the command.
     """
     if verbose:
-        result = _command_print(run(command, env=env), phase_key, command, verbose)
+        result = _command_print(run(command, env=env, shell=shell), phase_key, command, verbose)
     else:
-        result = _command_print(run(command, env=env, stdout=PIPE, stderr=PIPE), phase_key, command,
+        result = _command_print(run(command, env=env, stdout=PIPE, stderr=PIPE, shell=shell), phase_key, command,
                                 verbose)
     if result.returncode:
         raise ProcessFailedException(command, result)
