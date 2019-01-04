@@ -16,8 +16,13 @@
 # along with Slingring.  If not, see <http://www.gnu.org/licenses/>.
 
 ########################################################
+from tempfile import TemporaryDirectory
 
+from common.configuration import read_configuration
 from resources.messages import get as _
+from system.command import run_command
+from universe.workflow.tools.paths import colliding_paths_exist, colliding_local_or_schroot_paths_exist, \
+    local_multiverse_dir
 
 
 def import_universe_by_args(args):
@@ -40,12 +45,27 @@ def import_universe(import_file, verbose):
     print(_('import-intro').format(import_file))
 
     # create temp directory
-    # parse export file
-    # check for name collission
-    # create multiverse record
+    with TemporaryDirectory() as import_temp_dir:
+        run_command(['tar', '-xf', import_file, '-C', import_temp_dir, 'export.yml'], 'extract-export-file-phase',
+                    verbose)
+
+        # parse export file
+        universe_name = read_configuration(import_temp_dir + '/' + 'export.yml')['universe']
+
+        # check for name collision
+        if colliding_paths_exist(universe_name) or colliding_local_or_schroot_paths_exist(universe_name):
+            print(_('universe-exists-already'))
+            exit(1)
+
+        # create multiverse record
+        # todo: make sure local configuration directory exists, otherwise this will fail if it is the first universe
+        multiverse_directory = local_multiverse_dir()
+        run_command(['tar', '-xPf', import_file, '-C', multiverse_directory,
+                     '/multiverse-config/' + universe_name, '--strip-components=1'], 'extract-export-file-phase',
+                    verbose)
+        # todo: correct the installation path if ours differs
+
     # create mapping files
     # unpack schroot files
     # unpack files to target - transforming slingring_user to local user
     # change owner centric files to current owner
-
-
