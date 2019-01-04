@@ -57,6 +57,7 @@ def list_universes(verbose):
     else:
         print(_('no-universes-found'))
 
+
 def _get_directories_in_multiverse():
     multiverse_directory_path = paths.local_multiverse_dir()
     if os.path.exists(multiverse_directory_path):
