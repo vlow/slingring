@@ -23,6 +23,7 @@ import argparse
 from universe.workflow.creation import install_universe_by_args
 from universe.workflow.deletion import remove_universe_by_args
 from universe.workflow.export import export_universe_by_args
+from universe.workflow.iport import import_universe_by_args
 from universe.workflow.listing import list_universes_by_args
 from universe.workflow.update import update_universe_by_args
 from universe.workflow.upgrade import upgrade_universe_by_args
@@ -55,6 +56,10 @@ def process_cli_arguments():
     export_parser = subparsers.add_parser('export', help='exports a universe for long term storage or as backup')
     export_parser.add_argument('universe', help='the universe which should be exported')
     export_parser.set_defaults(func=export_universe_by_args)
+
+    import_parser = subparsers.add_parser('import', help='imports a previously exported universe')
+    import_parser .add_argument('import_file', help='the file from which the universe should be imported')
+    import_parser.set_defaults(func=import_universe_by_args)
 
     remove_parser = subparsers.add_parser('remove', help='removes an existing universe')
     remove_parser.add_argument('universe', help='the universe which should be removed')
