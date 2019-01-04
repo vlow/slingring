@@ -129,6 +129,7 @@ def export_universe(universe_name, verbose):
         # todo
         configuration._write_yaml_file(os.path.join(export_temp_dir, 'export.yml'), {'universe': universe_name})
 
+        # todo: change schroot owner in configuration file
         chroot_config_path = schroot_config_directory_path()
         chroot_config_file_name = schroot_config_file_name(universe_name)
         universe_parent_dir = os.path.dirname(installation_path)
