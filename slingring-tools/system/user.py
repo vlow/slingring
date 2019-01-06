@@ -32,10 +32,26 @@ def get_user():
     return pwd.getpwuid(user_id).pw_name
 
 
+def get_user_id():
+    """
+    Gets the executing user's user id.
+    :return: The user id
+    """
+    return geteuid()
+
+
 def get_user_group():
     """
-    Gets the executing group name.
+    Gets the executing user's group name.
     :return: The name of the primary user group for the executing user.
     """
     group_id = getegid()
     return grp.getgrgid(group_id).gr_name
+
+
+def get_user_group_id():
+    """
+    Gets the executing user's group id.
+    :return: The id of the primary user group for the executing user.
+    """
+    return getegid()

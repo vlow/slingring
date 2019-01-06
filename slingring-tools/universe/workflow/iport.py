@@ -16,13 +16,15 @@
 # along with Slingring.  If not, see <http://www.gnu.org/licenses/>.
 
 ########################################################
+import os
 from tempfile import TemporaryDirectory
 
 from common.configuration import read_configuration
 from resources.messages import get as _
 from system.command import run_command
+from system.user import get_user, get_user_group, get_user_id, get_user_group_id
 from universe.workflow.tools.paths import colliding_paths_exist, colliding_local_or_schroot_paths_exist, \
-    local_multiverse_dir
+    local_multiverse_dir, schroot_config_directory_path, schroot_config_file_name
 
 
 def import_universe_by_args(args):
@@ -42,6 +44,7 @@ def import_universe(import_file, verbose):
     :param import_file: The name of the universe which should be exported.
     :param verbose: True, for more verbose output.
     """
+    # todo: check if import_file exists
     print(_('import-intro').format(import_file))
 
     # create temp directory
@@ -61,11 +64,29 @@ def import_universe(import_file, verbose):
         # todo: make sure local configuration directory exists, otherwise this will fail if it is the first universe
         multiverse_directory = local_multiverse_dir()
         run_command(['tar', '-xPf', import_file, '-C', multiverse_directory,
-                     '/multiverse-config/' + universe_name, '--strip-components=1'], 'extract-export-file-phase',
+                     '/multiverse-config/' + universe_name, '--strip-components=1'], 'extract-multiverse-files-phase',
                     verbose)
         # todo: correct the installation path if ours differs
 
-    # create mapping files
-    # unpack schroot files
+        # create user/group maps
+        user_name = get_user()
+        user_id = get_user_id()
+        owner_map_file_path = os.path.join(import_temp_dir, 'slingring_import_owner_map')
+        with open(owner_map_file_path, 'w') as owner_map_file:
+            owner_map_file.write('slingring_user {}:{}'.format(user_name, user_id))
+
+        user_group = get_user_group()
+        user_group_id = get_user_group_id()
+        group_map_file_path = os.path.join(import_temp_dir, 'slingring_import_group_map')
+        with open(group_map_file_path, 'w') as group_map_file:
+            group_map_file.write('slingring_group {}:{}'.format(user_group, user_group_id))
+
+        # unpack schroot files
+        schroot_config_directory = schroot_config_directory_path()
+        run_command(['sudo', 'tar', '-xpPf', import_file, '-C', schroot_config_directory,
+                    '/schroot-config/' + schroot_config_file_name(universe_name), '--strip-components=1'],
+                    'extract-schroot-file-phase', verbose)
+        # adjust schroot file content
+
     # unpack files to target - transforming slingring_user to local user
     # change owner centric files to current owner
