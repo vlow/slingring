@@ -24,7 +24,8 @@ from resources.messages import get as _
 from system.command import run_command
 from system.user import get_user, get_user_group, get_user_id, get_user_group_id
 from universe.workflow.tools.paths import colliding_paths_exist, colliding_local_or_schroot_paths_exist, \
-    local_multiverse_dir, schroot_config_directory_path, schroot_config_file_name
+    local_multiverse_dir, schroot_config_directory_path, schroot_config_file_name, designated_universe_path, \
+    user_home_in_chroot, designated_universe_base
 
 
 def import_universe_by_args(args):
@@ -71,22 +72,41 @@ def import_universe(import_file, verbose):
         # create user/group maps
         user_name = get_user()
         user_id = get_user_id()
-        owner_map_file_path = os.path.join(import_temp_dir, 'slingring_import_owner_map')
-        with open(owner_map_file_path, 'w') as owner_map_file:
-            owner_map_file.write('slingring_user {}:{}'.format(user_name, user_id))
-
         user_group = get_user_group()
         user_group_id = get_user_group_id()
-        group_map_file_path = os.path.join(import_temp_dir, 'slingring_import_group_map')
-        with open(group_map_file_path, 'w') as group_map_file:
-            group_map_file.write('slingring_group {}:{}'.format(user_group, user_group_id))
 
         # unpack schroot files
         schroot_config_directory = schroot_config_directory_path()
         run_command(['sudo', 'tar', '-xpPf', import_file, '-C', schroot_config_directory,
                     '/schroot-config/' + schroot_config_file_name(universe_name), '--strip-components=1'],
                     'extract-schroot-file-phase', verbose)
-        # adjust schroot file content
+        # todo adjust schroot file content
 
-    # unpack files to target - transforming slingring_user to local user
+        # create target dir
+        chroot_directory = designated_universe_path(universe_name)
+        chroot_base_directory = designated_universe_base()
+
+        run_command(['sudo', 'mkdir', '-p', chroot_directory], 'create-chroot-directory-phase', verbose)
+
+        # unpack files to target - transforming slingring_user to local user
+        user_home = user_home_in_chroot(user_name)
+        run_command(
+            ['sudo', 'tar', '-xvf',
+             import_file,
+             '--strip=1',
+             '--preserve-permissions',
+             #  strip 1 obviously breaks the transform
+             '--transform=s:^/universe-data/' + universe_name + '/home/slingring_user/:' + universe_name + '/' + user_home + '/:',
+             '--transform=s:^/universe-data/' + universe_name + '/home/slingring_user:' + universe_name + '/' + user_home + ':',
+             '-C', chroot_base_directory, '/universe-data'], 'extract-universe-data-phase', verbose)
+
+        run_command(
+            ['sudo','find', chroot_directory, '-group', '232323', '-exec', 'chgrp', '-h', user_group, '{}', '\\', ';'
+             ], 'change-group-phase', verbose)
+
+        run_command(
+            ['sudo','find', chroot_directory, '-group', '323232', '-exec', 'chown', '-h', user_name, '{}', '\\', ';'
+             ], 'change-user-phase', verbose)
+
+        pass
     # change owner centric files to current owner
