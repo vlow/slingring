@@ -78,7 +78,7 @@ def import_universe(import_file, verbose):
         # unpack schroot files
         schroot_config_directory = schroot_config_directory_path()
         run_command(['sudo', 'tar', '-xpPf', import_file, '-C', schroot_config_directory,
-                    '/schroot-config/' + schroot_config_file_name(universe_name), '--strip-components=1'],
+                     '/schroot-config/' + schroot_config_file_name(universe_name), '--strip-components=1'],
                     'extract-schroot-file-phase', verbose)
         # todo adjust schroot file content
 
@@ -96,17 +96,43 @@ def import_universe(import_file, verbose):
              '--strip=1',
              '--preserve-permissions',
              #  strip 1 obviously breaks the transform
-             '--transform=s:^/universe-data/' + universe_name + '/home/slingring_user/:' + universe_name + '/' + user_home + '/:',
-             '--transform=s:^/universe-data/' + universe_name + '/home/slingring_user:' + universe_name + '/' + user_home + ':',
+             '--transform=s:^/universe-data/' + universe_name + '/home/slingring_user/:universe-data/' + universe_name + '/' + user_home + '/:',
+             '--transform=s:^/universe-data/' + universe_name + '/home/slingring_user:universe-data/' + universe_name + '/' + user_home + ':',
              '-C', chroot_base_directory, '/universe-data'], 'extract-universe-data-phase', verbose)
 
         run_command(
-            ['sudo','find', chroot_directory, '-group', '232323', '-exec', 'chgrp', '-h', user_group, '{}', '\\', ';'
+            ['sudo', 'find', chroot_directory, '-group', '232323', '-exec', 'chgrp', '-h', user_group, '{}', '\\', ';'
              ], 'change-group-phase', verbose)
 
         run_command(
-            ['sudo','find', chroot_directory, '-group', '323232', '-exec', 'chown', '-h', user_name, '{}', '\\', ';'
+            ['sudo', 'find', chroot_directory, '-user', '323232', '-exec', 'chown', '-h', user_name, '{}', '\\', ';'
              ], 'change-user-phase', verbose)
+
+        # touch file
+        etc_passwd_for_import_file_path = os.path.join(import_temp_dir, 'slingring_import_etc_passwd')
+        run_command(['sudo', 'touch', etc_passwd_for_import_file_path], 'etc-passwd-creation-phase', verbose)
+        # chmod file
+        run_command(['sudo', 'chmod', '644', etc_passwd_for_import_file_path], 'etc-passwd-creation-phase', verbose)
+        # sed /etc/passwd > file
+        etc_passwd_path = os.path.join(chroot_directory, 'etc/passwd')
+        escaped_user_home = user_home.replace('/', '\/')
+        run_command(
+            [
+                'sudo sh -c \'sed "s/^slingring_user:\([^:]:[0-9]*:[0-9]*\):Slingring User:slingring_home:\([^:]*\)/' +
+                user_name + ':\\1:Slingring User:' + escaped_user_home + ':\\2/" ' +
+                etc_passwd_path + ' > ' + etc_passwd_for_import_file_path + '\''], 'etc-passwd-creation-phase', verbose,
+            shell=True)
+
+        if etc_passwd_path == '/etc/passwd':
+            # make sure we don't accidentally overwrite the user's real /etc/passwd
+            print(_('invalid-chroot-path'))
+            exit(1)
+
+        run_command(
+            [
+                'sudo sh -c \'mv ' + etc_passwd_for_import_file_path + ' ' + etc_passwd_path + '\''],
+            'etc-passwd-creation-phase', verbose,
+            shell=True)
 
         pass
     # change owner centric files to current owner
