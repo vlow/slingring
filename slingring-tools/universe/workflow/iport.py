@@ -134,5 +134,28 @@ def import_universe(import_file, verbose):
             'etc-passwd-creation-phase', verbose,
             shell=True)
 
+        # groups
+        etc_group_for_import_file_path = os.path.join(import_temp_dir, 'slingring_import_etc_group')
+        run_command(['sudo', 'touch', etc_group_for_import_file_path], 'etc-group-creation-phase', verbose)
+        # chmod file
+        run_command(['sudo', 'chmod', '644', etc_group_for_import_file_path], 'etc-group-creation-phase', verbose)
+        # sed /etc/group > file
+        etc_group_path = os.path.join(chroot_directory, 'etc/group')
+        run_command(
+            ['sudo sh -c \'sed s/^slingring_group:/' + user_group + ':/ ' + etc_group_path + ' | ' +
+             'sed "s/\(..*:\)\(..*,\)\?\(slingring_user\)\(,..*\)\?/\\1\\2' + user_name + '\\4/"' +
+             ' > ' + etc_group_for_import_file_path + '\''], 'etc-group-creation-phase', verbose, shell=True)
+
+        if etc_group_path == '/etc/group':
+            # make sure we don't accidentally overwrite the user's real /etc/group
+            print(_('invalid-chroot-path'))
+            exit(1)
+
+        run_command(
+            [
+                'sudo sh -c \'mv ' + etc_group_for_import_file_path + ' ' + etc_group_path + '\''],
+            'etc-passwd-creation-phase', verbose,
+            shell=True)
+
         pass
     # change owner centric files to current owner
